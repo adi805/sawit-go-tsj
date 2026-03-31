@@ -311,7 +311,9 @@ class MainWindow(QMainWindow):
     def _on_journal_entry(self) -> None:
         """Handle journal entry action"""
         logger.info("Journal Entry action triggered")
-        QMessageBox.information(self, "Info", "Journal Entry view would open here")
+        from src.ui.journal_entry_view import JournalEntryView
+        view = JournalEntryView(self.user_info)
+        view.show()
     
     def _on_journal_list(self) -> None:
         """Handle journal list action"""
@@ -320,7 +322,9 @@ class MainWindow(QMainWindow):
     def _on_trial_balance(self) -> None:
         """Handle trial balance action"""
         logger.info("Trial Balance action triggered")
-        QMessageBox.information(self, "Info", "Trial Balance report would open here")
+        from src.ui.trial_balance_view import TrialBalanceView
+        view = TrialBalanceView(self.user_info)
+        view.show()
     
     def _on_general_ledger(self) -> None:
         """Handle general ledger action"""
