@@ -3,18 +3,14 @@ Sawit Go - TSJ - Financial Statement Models
 FS Account and FS Element
 """
 
-from sqlalchemy import String, Integer, ForeignKey, Boolean
-from sqlalchemy.orm import Mapped, mapped_column, relationship
-from typing import Optional, TYPE_CHECKING
+from sqlalchemy import String, Integer, ForeignKey, Boolean, func, DateTime
+from sqlalchemy.orm import Mapped, mapped_column
+from typing import Optional
 
-from src.models.base import BaseModel
-
-if TYPE_CHECKING:
-    from src.models.company import Company
-    from src.models.gl_account import GLAccount
+from src.models.base import Base
 
 
-class FSElement(BaseModel):
+class FSElement(Base):
     """Financial Statement Element model"""
     
     __tablename__ = "fs_element"
@@ -27,15 +23,14 @@ class FSElement(BaseModel):
     position: Mapped[Optional[str]] = mapped_column(String(10), nullable=True)
     display_order: Mapped[int] = mapped_column(Integer, default=0)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
-    
-    company: Mapped["Company"] = relationship("Company")
-    fs_accounts: Mapped[list["FSAccount"]] = relationship("FSAccount", back_populates="fs_element")
+    created_at: Mapped[DateTime] = mapped_column(DateTime, server_default=func.now())
+    updated_at: Mapped[DateTime] = mapped_column(DateTime, server_default=func.now(), onupdate=func.now())
     
     def __repr__(self) -> str:
-        return f"<FSElement(id={self.id}, code='{self.code}', name='{self.name}')>"
+        return f"<FSElement(id={self.id}, code='{self.code}')>"
 
 
-class FSAccount(BaseModel):
+class FSAccount(Base):
     """Financial Statement Account model"""
     
     __tablename__ = "fs_account"
@@ -43,14 +38,12 @@ class FSAccount(BaseModel):
     company_id: Mapped[int] = mapped_column(Integer, ForeignKey("company.id"), nullable=False)
     code: Mapped[str] = mapped_column(String(20), nullable=False)
     name: Mapped[str] = mapped_column(String(200), nullable=False)
-    fs_element_id: Mapped[Optional[int]] = mapped_column(Integer, ForeignKey("fs_element.id"), nullable=True)
+    fs_element_id: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     statement_type: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)
     display_order: Mapped[int] = mapped_column(Integer, default=0)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
-    
-    company: Mapped["Company"] = relationship("Company")
-    fs_element: Mapped[Optional["FSElement"]] = relationship("FSElement", back_populates="fs_accounts")
-    gl_accounts: Mapped[list["GLAccount"]] = relationship("GLAccount", back_populates="fs_account")
+    created_at: Mapped[DateTime] = mapped_column(DateTime, server_default=func.now())
+    updated_at: Mapped[DateTime] = mapped_column(DateTime, server_default=func.now(), onupdate=func.now())
     
     def __repr__(self) -> str:
-        return f"<FSAccount(id={self.id}, code='{self.code}', name='{self.name}')>"
+        return f"<FSAccount(id={self.id}, code='{self.code}')>"

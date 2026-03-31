@@ -12,7 +12,7 @@ from src.models.sl_account import SLAccount
 from src.models.period import Period
 from src.models.journal import JournalHeader, JournalLine
 from src.models.audit_log import AuditLog
-from src.models.settings import Settings
+from src.models.app_settings import AppSettings
 
 __all__ = [
     "Base",
@@ -26,5 +26,5 @@ __all__ = [
     "JournalHeader",
     "JournalLine",
     "AuditLog",
-    "Settings",
+    "AppSettings",
 ]

@@ -4,15 +4,9 @@ Sawit Go - TSJ - Company Model
 
 from sqlalchemy import String, Integer, Boolean, func, DateTime
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from typing import Optional, TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING, List
 
 from src.models.base import Base
-
-if TYPE_CHECKING:
-    from src.models.user import User
-    from src.models.gl_account import GLAccount
-    from src.models.period import Period
-    from src.models.journal import JournalHeader
 
 
 class Company(Base):
@@ -32,11 +26,6 @@ class Company(Base):
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     created_at: Mapped[DateTime] = mapped_column(DateTime, server_default=func.now())
     updated_at: Mapped[DateTime] = mapped_column(DateTime, server_default=func.now(), onupdate=func.now())
-    
-    users: Mapped[list["User"]] = relationship("User", back_populates="company")
-    gl_accounts: Mapped[list["GLAccount"]] = relationship("GLAccount", back_populates="company")
-    periods: Mapped[list["Period"]] = relationship("Period", back_populates="company")
-    journals: Mapped[list["JournalHeader"]] = relationship("JournalHeader", back_populates="company")
     
     def __repr__(self) -> str:
         return f"<Company(id={self.id}, code='{self.code}', name='{self.name}')>"
