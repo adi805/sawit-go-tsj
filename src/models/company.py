@@ -3,8 +3,8 @@ Sawit Go - TSJ - Company Model
 """
 
 from sqlalchemy import String, Integer, Boolean, func, DateTime
-from sqlalchemy.orm import Mapped, mapped_column, relationship
-from typing import Optional, TYPE_CHECKING, List
+from sqlalchemy.orm import Mapped, mapped_column
+from typing import Optional
 
 from src.models.base import Base
 
@@ -14,6 +14,7 @@ class Company(Base):
     
     __tablename__ = "company"
     
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     code: Mapped[str] = mapped_column(String(10), unique=True, nullable=False)
     name: Mapped[str] = mapped_column(String(200), nullable=False)
     address: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)

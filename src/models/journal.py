@@ -16,6 +16,7 @@ class JournalHeader(Base):
     
     __tablename__ = "journal_header"
     
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     company_id: Mapped[int] = mapped_column(Integer, ForeignKey("company.id"), nullable=False)
     period_id: Mapped[int] = mapped_column(Integer, ForeignKey("period.id"), nullable=False)
     journal_no: Mapped[str] = mapped_column(String(20), nullable=False)
@@ -39,6 +40,7 @@ class JournalLine(Base):
     
     __tablename__ = "journal_line"
     
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     header_id: Mapped[int] = mapped_column(Integer, ForeignKey("journal_header.id", ondelete="CASCADE"), nullable=False)
     account_id: Mapped[int] = mapped_column(Integer, ForeignKey("gl_account.id"), nullable=False)
     sl_account_id: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)

@@ -15,6 +15,7 @@ class Period(Base):
     
     __tablename__ = "period"
     
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     company_id: Mapped[int] = mapped_column(Integer, ForeignKey("company.id"), nullable=False)
     year: Mapped[int] = mapped_column(Integer, nullable=False)
     month: Mapped[int] = mapped_column(Integer, nullable=False)

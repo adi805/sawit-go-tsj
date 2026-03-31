@@ -2,11 +2,13 @@
 Sawit Go - TSJ - Database Session Management
 """
 
+import sys
+sys.setrecursionlimit(10000)
+
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, Session
+from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 from contextlib import contextmanager
-from loguru import logger
 from pathlib import Path
 
 from src.config.settings import Settings
@@ -26,10 +28,10 @@ class DatabaseSession:
         if cls._initialized:
             return
         
+        cls._initialized = True
+        
         db_path = Settings.get_database_path()
         db_url = f"sqlite:///{db_path}"
-        
-        logger.info(f"Initializing database at: {db_path}")
         
         cls._engine = create_engine(
             db_url,
@@ -46,16 +48,11 @@ class DatabaseSession:
         
         cls._create_tables()
         cls._seed_default_data()
-        
-        cls._initialized = True
-        logger.info("Database initialized successfully")
     
     @classmethod
     def _create_tables(cls) -> None:
         """Create all database tables"""
-        logger.info("Creating database tables...")
         Base.metadata.create_all(cls._engine)
-        logger.info("Database tables created")
     
     @classmethod
     def _seed_default_data(cls) -> None:
@@ -63,12 +60,11 @@ class DatabaseSession:
         from src.models import Company, User
         import bcrypt
         
-        with cls.get_session() as session:
+        session = cls._session_factory()
+        try:
             company_count = session.query(Company).count()
             
             if company_count == 0:
-                logger.info("Seeding default company and user...")
-                
                 default_company = Company(
                     code="TSJ",
                     name="PT Tulas Sakti Jaya",
@@ -97,11 +93,11 @@ class DatabaseSession:
                 )
                 session.add(admin_user)
                 session.commit()
-                
-                logger.info("Default data seeded successfully")
+        finally:
+            session.close()
     
     @classmethod
-    def get_session(cls) -> Session:
+    def get_session(cls):
         """Get a new database session"""
         if not cls._initialized:
             cls.initialize()
@@ -115,9 +111,8 @@ class DatabaseSession:
         try:
             yield session
             session.commit()
-        except Exception as e:
+        except Exception:
             session.rollback()
-            logger.error(f"Database transaction failed: {e}")
             raise
         finally:
             session.close()
@@ -128,4 +123,3 @@ class DatabaseSession:
         if cls._engine:
             cls._engine.dispose()
             cls._initialized = False
-            logger.info("Database connection closed")

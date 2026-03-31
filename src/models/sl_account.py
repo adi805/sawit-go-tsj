@@ -15,6 +15,7 @@ class SLAccount(Base):
     
     __tablename__ = "sl_account"
     
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     company_id: Mapped[int] = mapped_column(Integer, ForeignKey("company.id"), nullable=False)
     gl_account_id: Mapped[int] = mapped_column(Integer, ForeignKey("gl_account.id"), nullable=False)
     code: Mapped[str] = mapped_column(String(20), nullable=False)

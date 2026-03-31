@@ -14,6 +14,7 @@ class AuditLog(Base):
     
     __tablename__ = "audit_log"
     
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     company_id: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     user_id: Mapped[int] = mapped_column(Integer, ForeignKey("user.id"), nullable=False)
     table_name: Mapped[str] = mapped_column(String(50), nullable=False)

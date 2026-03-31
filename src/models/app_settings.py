@@ -14,6 +14,7 @@ class AppSettings(Base):
     
     __tablename__ = "app_settings"
     
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     company_id: Mapped[int] = mapped_column(Integer, ForeignKey("company.id"), nullable=False)
     setting_key: Mapped[str] = mapped_column(String(100), nullable=False)
     setting_value: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
