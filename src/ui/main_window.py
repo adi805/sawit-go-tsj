@@ -295,7 +295,10 @@ class MainWindow(QMainWindow):
     def _on_gl_accounts(self) -> None:
         """Handle GL accounts action"""
         logger.info("GL Accounts action triggered")
-        QMessageBox.information(self, "Info", "GL Accounts view would open here")
+        from src.ui.gl_accounts_view import GLAccountsView
+        view = GLAccountsView(self.user_info)
+        view.setWindowTitle("GL Accounts")
+        view.show()
     
     def _on_sl_accounts(self) -> None:
         """Handle SL accounts action"""
