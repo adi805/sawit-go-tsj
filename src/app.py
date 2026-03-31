@@ -19,7 +19,6 @@ class SawitGoApp(QApplication):
         self.setOrganizationName("PT Tulas Sakti Jaya")
         
         self._init_database()
-        self._create_main_window()
     
     def _init_database(self):
         """Initialize database connection"""
@@ -34,12 +33,19 @@ class SawitGoApp(QApplication):
             )
             sys.exit(1)
     
-    def _create_main_window(self):
-        """Create and show main window"""
+    def run_with_login(self):
+        """Run app with login dialog"""
+        from src.ui.login_dialog import LoginDialog
         from src.ui.main_window import MainWindow
-        self.main_window = MainWindow()
-        self.main_window.show()
+        
+        login = LoginDialog()
+        if login.exec() == LoginDialog.DialogCode.Accepted:
+            user_info = login.get_user_info()
+            self.main_window = MainWindow(user_info)
+            self.main_window.show()
+            return self.exec()
+        return 0
     
     def run(self):
-        """Run the application"""
-        return self.exec()
+        """Run the application - shows login first"""
+        return self.run_with_login()

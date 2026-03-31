@@ -18,8 +18,9 @@ from src.config.settings import Settings
 class MainWindow(QMainWindow):
     """Main application window"""
     
-    def __init__(self):
+    def __init__(self, user_info=None):
         super().__init__()
+        self.user_info = user_info or {}
         self.setWindowTitle(f"{Settings.APP_NAME} v{Settings.APP_VERSION}")
         self.setMinimumSize(1024, 768)
         self.resize(1280, 800)
@@ -29,7 +30,7 @@ class MainWindow(QMainWindow):
         self._create_central_widget()
         self._create_status_bar()
         
-        logger.info("Main window created")
+        logger.info(f"Main window created for user: {self.user_info.get('username', 'unknown')}")
     
     def _create_menu_bar(self) -> None:
         """Create menu bar"""
@@ -172,12 +173,14 @@ class MainWindow(QMainWindow):
         
         toolbar.addSeparator()
         
-        self.company_label = QLabel("Company: PT Tulas Sakti Jaya")
+        company_name = self.user_info.get('company_name', 'PT Tulas Sakti Jaya')
+        self.company_label = QLabel(f"Company: {company_name}")
         toolbar.addWidget(self.company_label)
         
         toolbar.addSeparator()
         
-        self.user_label = QLabel("User: Admin")
+        username = self.user_info.get('full_name', 'Admin')
+        self.user_label = QLabel(f"User: {username}")
         toolbar.addWidget(self.user_label)
     
     def _create_central_widget(self) -> None:
